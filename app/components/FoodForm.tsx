@@ -26,11 +26,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
     price: 0,
     rating: 0,
     image: '',
-    restaurant: {
-      name: '',
-      logo: '',
-      status: 'Open Now',
-    },
+   
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -223,7 +219,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
               name="restaurant_name"
               type="text"
               placeholder="Enter restaurant name"
-              value={formData.restaurant.name}
+              value="x"
               onChange={(e) => handleChange('restaurant.name', e.target.value)}
               error={errors.restaurant_name}
               data-test-id="restaurant-name-input"
