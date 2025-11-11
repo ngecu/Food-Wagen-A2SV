@@ -1,7 +1,7 @@
 'use client';
 
 import { FoodItem } from '../types/food';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface FoodCardProps {
   food: FoodItem;
@@ -14,10 +14,36 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
   const [imageError, setImageError] = useState(false);
   const [restaurantImageError, setRestaurantImageError] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  
+  // Create refs for the dropdown container and the more button
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const moreButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Check if click is outside both dropdown and more button
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(event.target as Node) &&
+        moreButtonRef.current &&
+        !moreButtonRef.current.contains(event.target as Node)
+      ) {
+        setShowDropdown(false);
+      }
+    };
+
+    if (showDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }
+  }, [showDropdown]);
 
   // Normalize data
   const displayName = food.name || food.food_name || 'Unknown Food';
@@ -33,7 +59,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
 
   if (!isMounted) {
     return (
-      <article className="food-card  overflow-hidden animate-pulse">
+      <article className="food-card overflow-hidden animate-pulse">
         <div className="food-card-image relative h-48 w-full bg-gray-300"></div>
         <div className="food-card-content py-2">
           <div className="space-y-3">
@@ -54,9 +80,10 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
         <img
           src={imageError ? '/placeholder-food.jpg' : displayImage}
           alt={displayName}
-          className="object-cover rounded-2xl w-full h-full"
+          className="object-cover rounded-2xl w-full h-full cursor-pointer"
           data-test-id="food-image"
           onError={() => setImageError(true)}
+          onClick={() => setShowDropdown(false)}
         />
         
         {/* Prominent Price Tag */}
@@ -69,9 +96,10 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
           </span>
         </div>
 
-        {/* Vertical More Dropdown - Moved to top right of image */}
-        <div className="food-more-dropdown absolute top-4 right-4">
+        {/* Vertical More Dropdown */}
+        <div className="food-more-dropdown absolute top-4 right-4" ref={dropdownRef}>
           <button
+            ref={moreButtonRef}
             onClick={() => setShowDropdown(!showDropdown)}
             className="food-more-btn bg-white bg-opacity-90 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-100 transition-all duration-200 shadow-lg"
             data-test-id="food-more-btn"
@@ -83,7 +111,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
 
           {/* Dropdown Menu */}
           {showDropdown && (
-            <div className="food-dropdown-menu absolute right-0 top-10 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 min-w-32 z-10 animate-slide-down">
+            <div className="food-dropdown-menu absolute right-0 top-10 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 min-w-32 z-50 animate-slide-down">
               <button
                 onClick={() => {
                   onEdit(food);
@@ -165,15 +193,6 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
           </span>
         </div>
       </div>
-
-      {/* Close dropdown when clicking outside */}
-      {showDropdown && (
-        <div 
-          className="fixed inset-0 z-0" 
-          onClick={() => setShowDropdown(false)}
-          data-test-id="food-dropdown-backdrop"
-        />
-      )}
     </article>
   );
 };
