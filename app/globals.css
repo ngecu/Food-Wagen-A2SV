@@ -235,7 +235,7 @@ padding:12px;
   font-weight: 700 !important;
   color:#757575 !important;
 }
-.food-search-btn span{
+.food-search-btn span,.food-price{
   font-weight: 700 !important;
 }
 

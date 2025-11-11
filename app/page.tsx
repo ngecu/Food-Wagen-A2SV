@@ -111,13 +111,43 @@ export default function Home() {
             <div className="food-empty-state-wrapper flex justify-center items-center min-h-96">
               <div className="food-empty-state-content bg-white rounded-3xl shadow-lg p-12 text-center max-w-2xl mx-6">
                 <div className="food-empty-icon-wrapper mb-8">
+                  {/* Cool Food Illustration SVG */}
                   <svg 
-                    className="food-empty-icon w-24 h-24 text-orange-200 mx-auto" 
-                    fill="currentColor" 
-                    viewBox="0 0 20 20"
+                    className="food-empty-icon w-48 h-48 text-orange-200 mx-auto" 
+                    viewBox="0 0 200 200" 
+                    fill="none" 
+                    xmlns="http://www.w3.org/2000/svg"
                     data-test-id="food-empty-icon"
                   >
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM6.75 9.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5z" clipRule="evenodd" />
+                    {/* Plate */}
+                    <circle cx="100" cy="100" r="45" fill="#F3F4F6" stroke="#E5E7EB" strokeWidth="2"/>
+                    <circle cx="100" cy="100" r="40" fill="white" stroke="#E5E7EB" strokeWidth="1"/>
+                    
+                    {/* Food Items */}
+                    {/* Burger */}
+                    <ellipse cx="85" cy="85" rx="12" ry="8" fill="#F59E0B" className="animate-bounce" style={{animationDelay: '0.1s'}}/>
+                    <ellipse cx="85" cy="90" rx="14" ry="6" fill="#78350F" className="animate-bounce" style={{animationDelay: '0.2s'}}/>
+                    <ellipse cx="85" cy="95" rx="12" ry="4" fill="#F59E0B" className="animate-bounce" style={{animationDelay: '0.3s'}}/>
+                    
+                    {/* Pizza Slice */}
+                    <path d="M120 70 L140 90 L120 110 Z" fill="#F87171" className="animate-pulse" style={{animationDelay: '0.4s'}}/>
+                    <circle cx="125" cy="85" r="2" fill="#FBBF24"/>
+                    <circle cx="135" cy="90" r="2" fill="#FBBF24"/>
+                    <circle cx="130" cy="95" r="2" fill="#FBBF24"/>
+                    
+                    {/* Drink */}
+                    <rect x="65" y="115" width="8" height="20" rx="2" fill="#60A5FA" className="animate-pulse" style={{animationDelay: '0.5s'}}/>
+                    <ellipse cx="69" cy="115" rx="4" ry="2" fill="#93C5FD"/>
+                    
+                    {/* Floating Utensils */}
+                    <g className="animate-float" style={{animationDelay: '0.6s'}}>
+                      <rect x="130" y="120" width="2" height="15" rx="1" fill="#9CA3AF" transform="rotate(45 130 120)"/>
+                      <rect x="135" y="125" width="2" height="12" rx="1" fill="#9CA3AF" transform="rotate(-45 135 125)"/>
+                    </g>
+                    
+                    {/* Thought Bubble */}
+                    <path d="M150 60 C160 55 165 65 160 70 C165 75 155 80 150 75 C145 80 135 75 140 70 C135 65 140 55 150 60 Z" fill="#F3F4F6" stroke="#E5E7EB" strokeWidth="1"/>
+                    <text x="150" y="70" textAnchor="middle" fill="#6B7280" fontSize="8" fontFamily="Arial">?</text>
                   </svg>
                 </div>
                 <h3 
@@ -140,7 +170,7 @@ export default function Home() {
                     onClick={handleAddMealClick}
                     variant="primary"
                     size="lg"
-                    className="food-empty-action-btn px-8 py-4 text-lg"
+                    className="food-empty-action-btn px-8 py-4 text-lg hover:scale-105 transition-transform duration-200"
                     data-test-id="food-add-first-btn"
                   >
                     🍽️ Add First Meal
@@ -169,7 +199,6 @@ export default function Home() {
                   ))}
                 </div>
                 
-               
                 {hasMore && (
                   <div className="food-load-more-section w-full text-center">
                     <div className="food-load-more-content mx-auto max-w-md flex flex-col items-center justify-center">    
@@ -185,14 +214,11 @@ export default function Home() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                           </svg>
                           Load More 
+
+                          
                         </span>
                       </Button>
-                      <p 
-                        className="food-progress-text text-gray-500 mt-4 text-sm font-medium"
-                        data-test-id="food-progress-text"
-                      >
-                        Displaying {Math.min(visibleFoods.length, foods.length)} of {foods.length} delicious meals
-                      </p>
+                    
                     </div>
                   </div>
                 )}
@@ -227,36 +253,36 @@ export default function Home() {
 
       {/* Delete Confirmation Modal */}
       <Modal
-  isOpen={!!deletingFood}
-  onClose={() => setDeletingFood(null)}
-  title="Delete Food Item"
-  size="sm"
-  data-test-id="food-modal-content" // Add this line
->
-  <div className="food-delete-modal-content">
-    <p className="mb-6 text-center">
-      Are you sure you want to delete "{deletingFood?.name}"? This action cannot be undone.
-    </p>
-    <div className="flex space-x-3">
-      <Button
-        variant="primary"
-        onClick={handleDeleteFood}
-        data-test-id="food-confirm-delete-btn"
-        className="w-1/2"
+        isOpen={!!deletingFood}
+        onClose={() => setDeletingFood(null)}
+        title="Delete Food Item"
+        size="sm"
+        data-test-id="food-modal-content"
       >
-        Delete
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() => setDeletingFood(null)}
-        data-test-id="food-cancel-delete-btn"
-        className="w-1/2"
-      >
-        Cancel
-      </Button>
-    </div>
-  </div>
-</Modal>
+        <div className="food-delete-modal-content">
+          <p className="mb-6 text-center">
+            Are you sure you want to delete "{deletingFood?.name}"? This action cannot be undone.
+          </p>
+          <div className="flex space-x-3">
+            <Button
+              variant="primary"
+              onClick={handleDeleteFood}
+              data-test-id="food-confirm-delete-btn"
+              className="w-1/2"
+            >
+              Delete
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setDeletingFood(null)}
+              data-test-id="food-cancel-delete-btn"
+              className="w-1/2"
+            >
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

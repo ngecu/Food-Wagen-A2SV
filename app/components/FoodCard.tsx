@@ -20,6 +20,10 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete, inde
   const dropdownRef = useRef<HTMLDivElement>(null);
   const moreButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Fallback image URLs
+  const FALLBACK_FOOD_IMAGE = 'https://images.pexels.com/photos/14393650/pexels-photo-14393650.png';
+  const FALLBACK_RESTAURANT_IMAGE = 'https://images.pexels.com/photos/14393650/pexels-photo-14393650.png';
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -50,9 +54,9 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete, inde
   const displayName = food.name || food.food_name || 'Unknown Food';
   const displayPrice = typeof food.price === 'string' ? parseFloat(food.price) : food.price;
   const displayRating = typeof food.rating === 'string' ? parseFloat(food.rating) : food.rating;
-  const displayImage = food.image || food.food_image || food.avatar || '/placeholder-food.jpg';
+  const displayImage = food.image || food.food_image || food.avatar || FALLBACK_FOOD_IMAGE;
   const restaurantName = food.restaurant_name || food.restaurant?.name || 'Unknown Restaurant';
-  const restaurantImage = food.restaurant_image || food.restaurant?.logo || food.logo || '/placeholder-restaurant.jpg';
+  const restaurantImage = food.restaurant_image || food.restaurant?.logo || food.logo || FALLBACK_RESTAURANT_IMAGE;
   const isOpen = food.open || food.restaurant_status === 'Open' || food.restaurant?.status === 'Open';
 
   const statusColor = isOpen ? 'bg-[rgba(121,185,60,0.2)] text-[#79B93C]' : 'bg-[rgba(241,114,40,0.2)] text-[#F17228]';
@@ -83,7 +87,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete, inde
     >
       <div className="food-card-image relative h-48 w-full">
         <img
-          src={imageError ? '/placeholder-food.jpg' : displayImage}
+          src={imageError ? FALLBACK_FOOD_IMAGE : displayImage}
           alt={displayName}
           className="object-cover rounded-2xl w-full h-full cursor-pointer transition-transform duration-150 ease-out"
           data-test-id="food-image"
@@ -92,7 +96,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete, inde
         />
         
         {/* Prominent Price Tag */}
-        <div className="food-price-tag absolute top-4 left-4 bg-orange-500 text-white rounded-md shadow-lg px-3 py-2 flex items-center space-x-2 transition-all duration-150 ease-out">
+        <div className="food-price-tag absolute top-4 left-4 bg-orange-500 text-white  px-3 py-2 flex items-center space-x-2 transition-all duration-150 ease-out">
           <svg width="16" height="16" viewBox="0 0 19 19" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 8.89453V1.6875C0 0.773438 0.738281 0 1.6875 0H8.85938C9.31641 0 9.73828 0.210938 10.0547 0.527344L17.4727 7.94531C18.1406 8.61328 18.1406 9.70312 17.4727 10.3359L10.3008 17.5078C9.66797 18.1758 8.57812 18.1758 7.91016 17.5078L0.492188 10.0898C0.175781 9.77344 0 9.35156 0 8.89453ZM3.9375 2.25C2.98828 2.25 2.25 3.02344 2.25 3.9375C2.25 4.88672 2.98828 5.625 3.9375 5.625C4.85156 5.625 5.625 4.88672 5.625 3.9375C5.625 3.02344 4.85156 2.25 3.9375 2.25Z" fill="white"/>
           </svg>
@@ -101,51 +105,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete, inde
           </span>
         </div>
 
-        {/* Vertical More Dropdown */}
-        <div className="food-more-dropdown absolute top-4 right-4" ref={dropdownRef}>
-          <button
-            ref={moreButtonRef}
-            onClick={() => setShowDropdown(!showDropdown)}
-            className="food-more-btn bg-white bg-opacity-90 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-100 transition-all duration-200 shadow-lg cursor-pointer hover:scale-110"
-            data-test-id="food-more-btn"
-          >
-            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-            </svg>
-          </button>
-
-          {/* Dropdown Menu */}
-          {showDropdown && (
-            <div className="food-dropdown-menu absolute right-0 top-10 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 min-w-32 z-50 animate-slide-down">
-              <button
-                onClick={() => {
-                  onEdit(food);
-                  setShowDropdown(false);
-                }}
-                className="food-dropdown-edit w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150 flex items-center space-x-2 cursor-pointer"
-                data-test-id="food-dropdown-edit"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                </svg>
-                <span>Edit</span>
-              </button>
-              <button
-                onClick={() => {
-                  onDelete(food);
-                  setShowDropdown(false);
-                }}
-                className="food-dropdown-delete w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150 flex items-center space-x-2 cursor-pointer"
-                data-test-id="food-dropdown-delete"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-                <span>Delete</span>
-              </button>
-            </div>
-          )}
-        </div>
+       
       </div>
       
       <div className="food-card-content py-5">
@@ -154,7 +114,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete, inde
             <div className="restaurant-details flex items-center space-x-3 w-full">
               <div className="restaurant-logo relative w-10 h-10 shrink-0">
                 <img
-                  src={restaurantImageError ? '/placeholder-restaurant.jpg' : restaurantImage}
+                  src={restaurantImageError ? FALLBACK_RESTAURANT_IMAGE : restaurantImage}
                   alt={restaurantName}
                   className="object-cover w-10 h-10 rounded-lg border-2 border-gray-200 transition-all duration-150 ease-out hover:border-orange-300"
                   data-test-id="restaurant-logo"
@@ -163,13 +123,55 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete, inde
               </div>
               <div className="flex flex-col flex-1 min-w-0">
                 {/* Food Name with proper truncation */}
-                <span 
-                  className="food-name text-sm text-gray-900 mb-1 truncate transition-colors duration-150 ease-out hover:text-orange-600"
-                  data-test-id="food-name"
-                  title={displayName}
-                >
-                  {displayName}
-                </span>
+              <div className="flex items-center justify-between w-full">
+  <span 
+    className="food-name text-sm text-gray-900 mb-1 truncate transition-colors duration-150 ease-out hover:text-orange-600 flex-1 pr-2"
+    data-test-id="food-name"
+    title={displayName}
+  >
+    {displayName}
+  </span>
+  
+  {/* Vertical More Dropdown */}
+  <div className="food-more-dropdown flex-shrink-0">
+    <button
+      ref={moreButtonRef}
+      onClick={() => setShowDropdown(!showDropdown)}
+      className="food-more-btn  bg-opacity-90 backdrop-blur-sm  w-8 h-8 flex items-center justify-center hover:bg-opacity-100 transition-all duration-200 cursor-pointer hover:scale-110"
+      data-test-id="food-more-btn"
+    >
+      <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+      </svg>
+    </button>
+
+    {/* Dropdown Menu */}
+    {showDropdown && (
+      <div className="food-dropdown-menu absolute right-0 bg-white rounded-xl shadow-2xl border border-gray-100 py-2 min-w-32 z-50 animate-slide-down">
+        <button
+          onClick={() => {
+            onEdit(food);
+            setShowDropdown(false);
+          }}
+          className="food-dropdown-edit w-full text-left px-4 py-2 text-sm  hover:bg-blue-50 text-blue-600 transition-colors duration-150 flex items-center space-x-2 cursor-pointer"
+          data-test-id="food-dropdown-edit"
+        >
+          <span>Edit</span>
+        </button>
+        <button
+          onClick={() => {
+            onDelete(food);
+            setShowDropdown(false);
+          }}
+          className="food-dropdown-delete w-full text-left px-4 py-2 text-sm  hover:bg-red-50 text-red-600 transition-colors duration-150 flex items-center space-x-2 cursor-pointer"
+          data-test-id="food-dropdown-delete"
+        >
+          <span>Delete</span>
+        </button>
+      </div>
+    )}
+  </div>
+</div>
                
                 {/* Rating with proper spacing */}
                 <div className="food-rating-container flex items-center space-x-1">

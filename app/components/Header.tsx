@@ -224,7 +224,7 @@ export const Header: React.FC<HeaderProps> = ({
                             {/* Delivery Type Selector and Search Card */}
                             <div className="food-hero-card bg-white rounded-3xl shadow-lg p-4 md:p-4 max-w-4xl mx-auto">
                                 {/* Delivery Type Selector */}
-                                <div className="food-delivery-type-selector mb-6 md:mb-8 w-full">
+                                <div className="food-delivery-type-selector mb-6 md:mb-8 w-full ">
                                     <div className="flex space-x-4 justify-left">
                                         <button
                                             onClick={() => setDeliveryType('delivery')}
