@@ -47,7 +47,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
 
   return (
     <article 
-      className="food-card rounded-2xl overflow-hidden"
+      className="food-card rounded-2xl overflow-hidden relative"
       data-test-id="food-card"
     >
       <div className="food-card-image relative h-48 w-full">
@@ -69,51 +69,11 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
           </span>
         </div>
 
-        
-      </div>
-      
-      <div className="food-card-content p-5">
-        <div className="food-card-restaurant">
-          <div className="restaurant-info flex items-center justify-between">
-            <div className="restaurant-details flex items-center space-x-3">
-              <div className="restaurant-logo relative w-10 h-10">
-                <img
-                  src={restaurantImageError ? '/placeholder-restaurant.jpg' : restaurantImage}
-                  alt={restaurantName}
-                  className="object-cover w-10 h-10 rounded-lg border-2 border-gray-200"
-                  data-test-id="restaurant-logo"
-                  onError={() => setRestaurantImageError(true)}
-                />
-              </div>
-              <div className="flex flex-col">
-                 <span 
-                  className="food-name text-sm font-semibold text-gray-900 mb-1 truncate whitespace-nowrap overflow-hidden"
-                  data-test-id="food-name"
-                  title={displayName}
-                >
-                  {displayName}
-                </span>
-               
-                {/* Rating with proper spacing */}
-                <div className="food-rating-container flex items-center space-x-1">
-                  <svg width="16" height="16" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10.6562 1.03125C11.1719 0 12.6328 0.0429688 13.1055 1.03125L15.9414 6.74609L22.2148 7.64844C23.332 7.82031 23.7617 9.19531 22.9453 10.0117L18.4336 14.4375L19.5078 20.668C19.6797 21.7852 18.4766 22.6445 17.4883 22.1289L11.9023 19.1641L6.27344 22.1289C5.28516 22.6445 4.08203 21.7852 4.25391 20.668L5.32812 14.4375L0.816406 10.0117C0 9.19531 0.429688 7.82031 1.54688 7.64844L7.86328 6.74609L10.6562 1.03125Z" fill="#FFB30E"/>
-                  </svg>
-                  <span 
-                    className="food-rating text-sm font-semibold text-[#FFB30E]" 
-                    data-test-id="food-rating"
-                  >
-                    {typeof displayRating === 'number' ? displayRating.toFixed(1) : '0.0'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Vertical More Dropdown */}
-        <div className="food-more-dropdown">
+        {/* Vertical More Dropdown - Moved to top right of image */}
+        <div className="food-more-dropdown absolute top-4 right-4">
           <button
             onClick={() => setShowDropdown(!showDropdown)}
-            className="food-more-btn bg-white bg-opacity-90 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-100 transition-all duration-200"
+            className="food-more-btn bg-white bg-opacity-90 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-100 transition-all duration-200 shadow-lg"
             data-test-id="food-more-btn"
           >
             <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +113,45 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
             </div>
           )}
         </div>
-
+      </div>
+      
+      <div className="food-card-content p-5">
+        <div className="food-card-restaurant">
+          <div className="restaurant-info flex items-center justify-between">
+            <div className="restaurant-details flex items-center space-x-3 w-full">
+              <div className="restaurant-logo relative w-10 h-10 flex-shrink-0">
+                <img
+                  src={restaurantImageError ? '/placeholder-restaurant.jpg' : restaurantImage}
+                  alt={restaurantName}
+                  className="object-cover w-10 h-10 rounded-lg border-2 border-gray-200"
+                  data-test-id="restaurant-logo"
+                  onError={() => setRestaurantImageError(true)}
+                />
+              </div>
+              <div className="flex flex-col flex-1 min-w-0">
+                {/* Food Name with proper truncation */}
+                <span 
+                  className="food-name text-sm font-semibold text-gray-900 mb-1 truncate"
+                  data-test-id="food-name"
+                  title={displayName}
+                >
+                  {displayName}
+                </span>
+               
+                {/* Rating with proper spacing */}
+                <div className="food-rating-container flex items-center space-x-1">
+                  <svg width="16" height="16" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10.6562 1.03125C11.1719 0 12.6328 0.0429688 13.1055 1.03125L15.9414 6.74609L22.2148 7.64844C23.332 7.82031 23.7617 9.19531 22.9453 10.0117L18.4336 14.4375L19.5078 20.668C19.6797 21.7852 18.4766 22.6445 17.4883 22.1289L11.9023 19.1641L6.27344 22.1289C5.28516 22.6445 4.08203 21.7852 4.25391 20.668L5.32812 14.4375L0.816406 10.0117C0 9.19531 0.429688 7.82031 1.54688 7.64844L7.86328 6.74609L10.6562 1.03125Z" fill="#FFB30E"/>
+                  </svg>
+                  <span 
+                    className="food-rating text-sm font-semibold text-[#FFB30E]" 
+                    data-test-id="food-rating"
+                  >
+                    {typeof displayRating === 'number' ? displayRating.toFixed(1) : '0.0'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
