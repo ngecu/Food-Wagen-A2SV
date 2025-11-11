@@ -32,6 +32,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     if (food) {
@@ -41,9 +42,9 @@ export const FoodForm: React.FC<FoodFormProps> = ({
         rating: food.rating as number || 0,
         image: food.image || '',
         restaurant: {
-          name: food.restaurant?.name || '',
-          logo: food.restaurant?.logo || '',
-          status: food.restaurant?.status || 'Open Now',
+          name: food.restaurant_name || '',
+          logo: food.restaurant_image || '',
+          status: food.restaurant_status === 'Closed' ? 'Closed' : 'Open Now',
         },
       });
     } else {
@@ -61,6 +62,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
       });
     }
     setErrors({});
+    setIsSubmitted(false);
   }, [food]);
 
   const validateForm = (): boolean => {
@@ -110,6 +112,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitted(true);
     if (validateForm()) {
       onSubmit(formData);
     }
@@ -137,103 +140,94 @@ export const FoodForm: React.FC<FoodFormProps> = ({
     }
   };
 
+  // Only show errors after form submission
+  const getError = (fieldName: string): string => {
+    return isSubmitted ? errors[fieldName] || '' : '';
+  };
+
   return (
     <form onSubmit={handleSubmit} className="food-form">
       {/* Food Information */}
       <div className="food-form-section mb-6">
-        <h3 className="food-form-section-title text-lg font-semibold mb-4 text-gray-900">
-          Food Information
-        </h3>
-        
         <Input
-          label="Food Name"
           name="food_name"
           type="text"
           placeholder="Enter food name"
           value={formData.name}
           onChange={(e) => handleChange('name', e.target.value)}
-          error={errors.food_name}
+          error={getError('food_name')}
           data-test-id="food-name-input"
           required
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          <Input
-            label="Food Price ($)"
-            name="food_price"
-            type="number"
-            step="0.01"
-            placeholder="Enter food price"
-            value={formData.price || ''}
-            onChange={(e) => handleChange('price', parseFloat(e.target.value) || 0)}
-            data-test-id="food-price-input"
-            required
-          />
-
-          <Input
-            label="Food Rating (1-5)"
-            name="food_rating"
-            type="number"
-            min="1"
-            max="5"
-            step="0.1"
-            placeholder="Enter food rating"
-            value={formData.rating || ''}
-            onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
-            error={errors.food_rating}
-            data-test-id="food-rating-input"
-            required
-          />
-        </div>
+        <Input
+          name="food_rating"
+          type="number"
+          min="1"
+          max="5"
+          step="0.1"
+          placeholder="Enter food rating"
+          value={formData.rating || ''}
+          onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
+          error={getError('food_rating')}
+          data-test-id="food-rating-input"
+          required
+          className="mt-4"
+        />
 
         <Input
-          label="Food Image URL"
+          name="food_price"
+          type="number"
+          step="0.01"
+          placeholder="Enter food price"
+          value={formData.price || ''}
+          onChange={(e) => handleChange('price', parseFloat(e.target.value) || 0)}
+          error={getError('food_price')}
+          data-test-id="food-price-input"
+          required
+          className="mt-4"
+        />
+
+        <Input
           name="food_image"
           type="url"
           placeholder="Enter food image URL"
           value={formData.image}
           onChange={(e) => handleChange('image', e.target.value)}
-          error={errors.food_image}
+          error={getError('food_image')}
           data-test-id="food-image-input"
           required
           className="mt-4"
         />
-      </div>
-
-      {/* Restaurant Information */}
-      <div className="food-form-section mb-6">
-        <h3 className="food-form-section-title text-lg font-semibold mb-4 text-gray-900">
-          Restaurant Information
-        </h3>
 
         <Input
-          label="Restaurant Name"
           name="restaurant_name"
           type="text"
           placeholder="Enter restaurant name"
           value={formData.restaurant.name}
           onChange={(e) => handleChange('restaurant.name', e.target.value)}
-          error={errors.restaurant_name}
+          error={getError('restaurant_name')}
           data-test-id="restaurant-name-input"
           required
+          className="mt-4"
         />
 
         <Input
-          label="Restaurant Logo URL"
           name="restaurant_logo"
           type="url"
           placeholder="Enter restaurant logo URL"
           value={formData.restaurant.logo}
           onChange={(e) => handleChange('restaurant.logo', e.target.value)}
-          error={errors.restaurant_logo}
+          error={getError('restaurant_logo')}
           data-test-id="restaurant-logo-input"
           required
           className="mt-4"
         />
 
         <div className="food-input-group mt-4">
-          <label htmlFor="restaurant_status" className="food-label block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="restaurant_status" className="block text-sm font-medium text-gray-700 mb-2">
             Restaurant Status
+            <span className="text-red-500 ml-1">*</span>
           </label>
           <select
             id="restaurant_status"
@@ -247,25 +241,29 @@ export const FoodForm: React.FC<FoodFormProps> = ({
             <option value="Open Now">Open Now</option>
             <option value="Closed">Closed</option>
           </select>
-          {errors.restaurant_status && (
+          {isSubmitted && errors.restaurant_status && (
             <div 
               id="restaurant_status-error" 
-              className="food-error text-red-500 text-sm mt-1"
+              className="food-error text-red-500 text-sm mt-1 flex items-center gap-1"
               data-test-id="restaurant-status-error"
             >
+              <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
               {errors.restaurant_status}
             </div>
           )}
         </div>
       </div>
 
-      {/* Form Actions */}
-      <div className="food-form-actions flex space-x-3 justify-end pt-4 border-t">
+      {/* Form Actions with 50% width buttons */}
+      <div className="food-form-actions flex space-x-3 pt-4 border-t border-gray-200">
         <Button
           type="button"
-          variant="secondary"
+          variant="outline"
           onClick={onClose}
           data-test-id="food-cancel-btn"
+          className="w-1/2"
         >
           Cancel
         </Button>
@@ -273,6 +271,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
           type="submit"
           isLoading={isLoading}
           data-test-id="food-submit-btn"
+          className="w-1/2"
         >
           {isLoading 
             ? (food ? 'Updating Food...' : 'Adding Food...') 

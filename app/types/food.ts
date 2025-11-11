@@ -7,6 +7,7 @@ export interface Restaurant {
 
 // src/types/food.ts
 export interface FoodItem {
+  restaurant: any;
   id: string;
   name: string;
   price: string | number;
@@ -24,10 +25,6 @@ export interface FoodItem {
   restaurant_image?: string;
   restaurant_status?: string;
   Price?: string;
-  
-  // Remove nested restaurant object since API doesn't provide it
-  // restaurant?: Restaurant;
-  
   createdAt?: string;
 }
 
