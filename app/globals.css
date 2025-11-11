@@ -207,9 +207,8 @@ flex-grow: 0;
 display: flex;
 flex-direction: row;
 align-items: center;
-padding: 1vw;
-gap: 1229px;
-height: 74px;
+padding: 0.5vw 11vw;
+
 
 background: #FFFFFF;
 /* Object shadow 1 */
@@ -246,14 +245,26 @@ flex: none;
 order: 1;
 align-self: stretch;
 flex-grow: 0;
-padding:24px;
+padding:12px;
 
 }
 
 
+.food-delivery-btn span{
+  font-weight: 700 !important;
+  color:#757575 !important;
+}
 
+.food-hero-section{
+  background:var(--sys-light-color-primary)
+}
 
-
+.food-price-tag{
+      gap: 2%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 
 

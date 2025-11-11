@@ -1,4 +1,3 @@
-// src/components/Footer.tsx
 'use client';
 
 import { useState } from 'react';
@@ -17,10 +16,11 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ 
-  companyName = "Your Company" 
+  companyName = "FoodWagen" 
 }) => {
   const [email, setEmail] = useState('');
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const currentYear = new Date().getFullYear();
 
   const socialLinks: SocialLink[] = [
@@ -62,13 +62,16 @@ export const Footer: React.FC<FooterProps> = ({
     }
   ];
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      // Handle subscription logic here
+    if (email && !isLoading) {
+      setIsLoading(true);
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 2000));
       console.log('Subscribed with email:', email);
       setIsSubscribed(true);
       setEmail('');
+      setIsLoading(false);
       // Reset after 3 seconds
       setTimeout(() => setIsSubscribed(false), 3000);
     }
@@ -86,22 +89,22 @@ export const Footer: React.FC<FooterProps> = ({
             </h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/about" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/about" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-about">
                   About us
                 </Link>
               </li>
               <li>
-                <Link href="/team" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/team" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-team">
                   Team
                 </Link>
               </li>
               <li>
-                <Link href="/careers" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/careers" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-careers">
                   Careers
                 </Link>
               </li>
               <li>
-                <Link href="/blog" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/blog" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-blog">
                   Blog
                 </Link>
               </li>
@@ -115,17 +118,17 @@ export const Footer: React.FC<FooterProps> = ({
             </h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/help" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/help" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-help">
                   Help & Support
                 </Link>
               </li>
               <li>
-                <Link href="/partner" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/partner" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-partner">
                   Partner with us
                 </Link>
               </li>
               <li>
-                <Link href="/ride" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/ride" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-ride">
                   Ride with us
                 </Link>
               </li>
@@ -139,22 +142,22 @@ export const Footer: React.FC<FooterProps> = ({
             </h3>
             <ul className="space-y-3">
               <li>
-                <Link href="/terms" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/terms" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-terms">
                   Terms & Conditions
                 </Link>
               </li>
               <li>
-                <Link href="/refund" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/refund" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-refund">
                   Refund & Cancellation
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/privacy" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-privacy">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/cookies" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200">
+                <Link href="/cookies" className="food-footer-link text-gray-300 hover:text-white transition-colors duration-200" data-test-id="food-footer-cookies">
                   Cookie Policy
                 </Link>
               </li>
@@ -164,22 +167,22 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Newsletter Subscription */}
           <div className="lg:col-span-2">
             <h3 className="food-footer-column-title text-lg font-bold mb-6 text-white">
-              Receive exclusive offers in your mailbox
+              Receive exclusive food offers
             </h3>
             
             {isSubscribed ? (
-              <div className="food-subscription-success bg-green-600 text-white p-4 rounded-lg text-center">
+              <div className="food-subscription-success bg-green-600 text-white p-4 rounded-lg text-center" data-test-id="food-subscription-success">
                 <svg className="w-6 h-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <p className="text-sm">Thank you for subscribing!</p>
+                <p className="text-sm">Thank you for subscribing to food updates!</p>
               </div>
             ) : (
               <form onSubmit={handleSubscribe} className="space-y-4">
                 <Input
                   name="subscription_email"
                   type="email"
-                  placeholder="Enter Your email"
+                  placeholder="Enter your email for food offers"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -190,9 +193,10 @@ export const Footer: React.FC<FooterProps> = ({
                   type="submit"
                   variant="primary"
                   className="food-subscription-btn w-full"
+                  isLoading={isLoading}
                   data-test-id="food-subscription-btn"
                 >
-                  Subscribe
+                  {isLoading ? 'Subscribing...' : 'Subscribe to Food Updates'}
                 </Button>
               </form>
             )}
@@ -208,7 +212,7 @@ export const Footer: React.FC<FooterProps> = ({
                     key={social.name}
                     href={social.url}
                     className="food-social-link bg-gray-800 p-3 rounded-lg hover:bg-orange-500 transition-colors duration-200"
-                    aria-label={social.name}
+                    aria-label={`Follow us on ${social.name}`}
                     data-test-id={`food-social-${social.name.toLowerCase()}`}
                   >
                     {social.icon}
@@ -232,18 +236,18 @@ export const Footer: React.FC<FooterProps> = ({
             {/* Made with love */}
             <div className="food-made-with flex items-center space-x-2 text-gray-400 text-sm">
               <span>Made with</span>
-              <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+              <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20" data-test-id="food-heart-icon">
                 <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
               </svg>
               <span>by</span>
-              <Link href="https://thameswagon.com" className="text-orange-500 hover:text-orange-400 transition-colors">
+              <Link href="https://thameswagon.com" className="text-orange-500 hover:text-orange-400 transition-colors" data-test-id="food-company-link">
                 Thameswagon
               </Link>
             </div>
 
-            {/* Resort text - optional */}
+            {/* Resort text */}
             <div className="food-resort text-gray-400 text-sm">
-              <span>Resort</span>
+              <span>Food Resort</span>
             </div>
           </div>
         </div>
