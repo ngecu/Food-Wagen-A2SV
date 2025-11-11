@@ -6,7 +6,11 @@ import { Button } from './ui/Button';
 import Image from 'next/image';
 import { Input } from './ui/Input';
 
-export const Header: React.FC = () => {
+interface HeaderProps {
+  onAddMealClick: () => void;
+}
+
+export const Header: React.FC<HeaderProps> = ({ onAddMealClick }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [deliveryType, setDeliveryType] = useState<'delivery' | 'pickup'>('delivery');
 
@@ -34,6 +38,7 @@ export const Header: React.FC = () => {
                             <Button
                                 type="button"
                                 variant="primary"
+                                onClick={onAddMealClick}
                                 data-test-id="food-add-meal-btn"
                             >
                                 Add Meal
@@ -64,6 +69,18 @@ export const Header: React.FC = () => {
                             data-test-id="food-mobile-nav"
                         >
                             <div className="flex flex-col space-y-4">
+                                <Button
+                                    type="button"
+                                    variant="primary"
+                                    onClick={() => {
+                                        onAddMealClick();
+                                        setIsMenuOpen(false);
+                                    }}
+                                    className="w-full justify-center"
+                                    data-test-id="food-mobile-add-meal-btn"
+                                >
+                                    Add Meal
+                                </Button>
                                 <Link 
                                     href="/" 
                                     className="food-nav-link text-gray-700 hover:text-blue-600 transition-colors duration-150 py-2"
