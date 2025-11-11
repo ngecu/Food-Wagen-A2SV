@@ -1,4 +1,3 @@
-// src/components/Modal.tsx
 'use client';
 
 import { ReactNode } from 'react';
@@ -9,6 +8,7 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
+  [key: string]: any; // This allows any additional props including data-test-id
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -16,7 +16,8 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   title,
   children,
-  size = 'md'
+  size = 'md',
+  ...props // This captures all additional props
 }) => {
   if (!isOpen) return null;
 
@@ -31,19 +32,21 @@ export const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-opacity-50 backdrop-blur-sm">
       <div 
         className={`
+          p-4
           w-full ${sizeClasses[size]} 
           bg-white rounded-2xl shadow-2xl 
-          overflow-visible
+          max-h-[90vh] overflow-hidden
           animate-in fade-in-90 zoom-in-90 duration-200
         `}
+        {...props} // Spread additional props here
       >
-        <div className="p-4">
-          <div className="flex-1 text-center">
-            <h6 className="text-xl font-semibold text-[#FF9A0E] inline-block">{title}</h6>
-          </div>
+        <div className="flex-1 text-center">
+          <h6 className="text-xl font-semibold text-[#FF9A0E] inline-block" data-test-id="food-modal-title">
+            {title}
+          </h6>
         </div>
 
-        {/* Modal Content - No scrollbar, content can overflow */}
+        {/* Modal Content */}
         <div className="p-6 overflow-visible">
           {children}
         </div>

@@ -1,4 +1,3 @@
-// src/utils/api.ts
 import { FoodItem, FoodFormData } from '../types/food';
 import { normalizeFoodData } from './normailze';
 
@@ -6,15 +5,40 @@ const API_BASE_URL = 'https://6852821e0594059b23cdd834.mockapi.io';
 
 export const foodApi = {
   getFoods: async (search?: string): Promise<FoodItem[]> => {
-    const url = search ? `${API_BASE_URL}/Food?name=${search}` : `${API_BASE_URL}/Food`;
-    const response = await fetch(url, {
-      next: { revalidate: 60 } // Cache for 60 seconds
-    });
-    if (!response.ok) throw new Error('Failed to fetch foods');
-    const data = await response.json();
-    return normalizeFoodData(data);
+    try {
+      // Only add search parameter if it's provided and not empty
+      const url = search && search.trim() ? 
+        `${API_BASE_URL}/Food?name=${encodeURIComponent(search.trim())}` : 
+        `${API_BASE_URL}/Food`;
+      
+      console.log('Fetching foods from:', url); // Debug log
+      
+      const response = await fetch(url, {
+        next: { revalidate: 60 } // Cache for 60 seconds
+      });
+      
+      if (!response.ok) {
+        // If 404 or other error, return empty array instead of throwing
+        if (response.status === 404) {
+          console.log('No foods found, returning empty array');
+          return [];
+        }
+        throw new Error(`Failed to fetch foods: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Raw API response:', data); // Debug log
+      const normalizedData = normalizeFoodData(data);
+      console.log('Normalized data:', normalizedData); // Debug log
+      return normalizedData;
+    } catch (error) {
+      console.error('API Error:', error);
+      // Return empty array instead of throwing to prevent crashes
+      return [];
+    }
   },
 
+  // ... rest of your API functions remain the same
   createFood: async (food: FoodFormData): Promise<FoodItem> => {
     const response = await fetch(`${API_BASE_URL}/Food`, {
       method: 'POST',

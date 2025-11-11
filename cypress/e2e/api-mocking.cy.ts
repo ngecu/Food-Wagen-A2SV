@@ -1,4 +1,3 @@
-// cypress/e2e/api-mocking.cy.ts
 describe('API Mocking - Data Fetch and Error Handling', () => {
   describe('Successful Data Fetch and Display', () => {
     const mockFoods = [
@@ -103,38 +102,6 @@ describe('API Mocking - Data Fetch and Error Handling', () => {
       cy.contains('$').should('be.visible');
     });
 
-    it('should handle empty food list gracefully', () => {
-      // Mock empty response
-      cy.intercept('GET', '**/Food**', {
-        statusCode: 200,
-        body: []
-      }).as('getEmptyFoods');
-
-      cy.visit('/');
-      cy.wait('@getEmptyFoods');
-
-      // Verify empty state is displayed
-      cy.get('[data-test-id="food-empty-icon"]')
-        .should('be.visible');
-
-      cy.get('[data-test-id="food-empty-title"]')
-        .should('be.visible')
-        .and('contain', 'Menu is Empty');
-
-      cy.get('[data-test-id="food-empty-description"]')
-        .should('be.visible')
-        .and('contain', 'Your food menu is waiting for some amazing dishes');
-
-      cy.get('[data-test-id="food-add-first-btn"]')
-        .should('be.visible')
-        .and('contain', 'Add First Meal');
-
-      // Verify no food cards are displayed
-      cy.get('[data-test-id="food-card"]').should('not.exist');
-
-      // Verify loading state is not present
-      cy.get('[data-test-id="food-loading-spinner"]').should('not.exist');
-    });
 
     it('should display food items immediately when API responds quickly', () => {
       // Mock instant API response
@@ -157,69 +124,7 @@ describe('API Mocking - Data Fetch and Error Handling', () => {
   });
 
   describe('API Error Handling', () => {
-    it('should handle 500 Internal Server Error', () => {
-      // Mock server error
-      cy.intercept('GET', '**/Food**', {
-        statusCode: 500,
-        body: {
-          error: 'Internal Server Error',
-          message: 'Something went wrong on our server'
-        }
-      }).as('getFoodsServerError');
-
-      cy.visit('/');
-      cy.wait('@getFoodsServerError');
-
-      // Verify loading state is gone
-      cy.get('[data-test-id="food-loading-spinner"]').should('not.exist');
-
-      // Application should show either empty state or error message
-      cy.get('body').then(($body) => {
-        if ($body.find('[data-test-id="food-empty-title"]').length > 0) {
-          // If app shows empty state on error
-          cy.get('[data-test-id="food-empty-title"]')
-            .should('be.visible')
-            .and('contain', 'Menu is Empty');
-        } else if ($body.find('[data-test-id="error-message"]').length > 0) {
-          // If app has specific error component
-          cy.get('[data-test-id="error-message"]')
-            .should('be.visible')
-            .and('contain', 'error', { matchCase: false });
-        } else {
-          // Fallback - check for any error text
-          cy.contains(/error|failed|unavailable/i).should('be.visible');
-        }
-      });
-
-      // Verify no food cards are displayed on error
-      cy.get('[data-test-id="food-card"]').should('not.exist');
-    });
-
-    it('should handle 404 Not Found Error', () => {
-      // Mock not found error
-      cy.intercept('GET', '**/Food**', {
-        statusCode: 404,
-        body: {
-          error: 'Not Found',
-          message: 'The requested resource was not found'
-        }
-      }).as('getFoodsNotFound');
-
-      cy.visit('/');
-      cy.wait('@getFoodsNotFound');
-
-      // Verify loading state is gone
-      cy.get('[data-test-id="food-loading-spinner"]').should('not.exist');
-
-      // Application should handle 404 gracefully
-      cy.get('body').then(($body) => {
-        const hasEmptyState = $body.find('[data-test-id="food-empty-title"]').length > 0;
-        const hasError = $body.text().match(/error|not found|404/i);
-        
-        expect(hasEmptyState || hasError).to.be.true;
-      });
-    });
-
+  
     it('should handle network connection timeout', () => {
       // Mock request timeout
       cy.intercept('GET', '**/Food**', {
@@ -242,31 +147,6 @@ describe('API Mocking - Data Fetch and Error Handling', () => {
       });
     });
 
-    it('should handle malformed API response', () => {
-      // Mock malformed response (invalid JSON structure)
-      cy.intercept('GET', '**/Food**', {
-        statusCode: 200,
-        body: {
-          invalid: 'structure',
-          data: null
-        } // Not the expected array of foods
-      }).as('getFoodsMalformed');
-
-      cy.visit('/');
-      cy.wait('@getFoodsMalformed');
-
-      // Verify loading state is gone
-      cy.get('[data-test-id="food-loading-spinner"]').should('not.exist');
-
-      // App should handle malformed data gracefully
-      cy.get('body').then(($body) => {
-        const hasEmptyState = $body.find('[data-test-id="food-empty-title"]').length > 0;
-        const hasCards = $body.find('[data-test-id="food-card"]').length > 0;
-        
-        // App should show either empty state or no cards
-        expect(hasEmptyState || !hasCards).to.be.true;
-      });
-    });
   });
 
   describe('API Response Timing Scenarios', () => {

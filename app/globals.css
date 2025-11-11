@@ -231,9 +231,12 @@ padding:12px;
 }
 
 
-.food-delivery-btn span{
+.food-delivery-btn span,.food-pickup-btn span{
   font-weight: 700 !important;
   color:#757575 !important;
+}
+.food-search-btn span{
+  font-weight: 700 !important;
 }
 
 .food-hero-section{
@@ -251,7 +254,7 @@ padding:12px;
   font-weight: 700 !important;
 }
 .food-delete-modal-content p{
-  color:#9E9E9E;
+  color:#9E9E9E !important
 }
 .food-footer-column-title{
       font-style: normal;
@@ -319,3 +322,14 @@ flex-grow: 0;
 .bg-open-status {
   background-color: rgba(121, 185, 60, 0.3);
 }
+
+.food-header-title-container{width:75%;padding: 2% 0 0 0}
+
+@media (max-width: 768px) {
+    .food-header-image-container {
+        display: none !important;
+    }
+    .food-header-title-container{
+      width:100%;
+    }
+  }

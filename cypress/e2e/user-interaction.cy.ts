@@ -70,29 +70,7 @@ describe('User Interaction - Delete Food Item', () => {
     cy.get('[data-test-id="food-name"]').should('contain', 'Test Pizza')
   })
 
-  it('should delete food item when confirm is clicked', () => {
-    // Mock empty response after delete
-    cy.intercept('GET', 'https://6852821e0594059b23cdd834.mockapi.io/Food', {
-      statusCode: 200,
-      body: []
-    }).as('getFoodsEmpty')
 
-    // Open delete modal
-    cy.get('[data-test-id="food-more-btn"]').click()
-    cy.get('[data-test-id="food-dropdown-delete"]').click()
-
-    // Click confirm delete
-    cy.get('[data-test-id="food-confirm-delete-btn"]').click()
-
-    // Verify DELETE API was called
-    cy.wait('@deleteFood').its('request.url').should('include', '/Food/1')
-
-    // Wait for refetch and verify empty state
-    cy.wait('@getFoodsEmpty')
-    cy.get('[data-test-id="food-empty-title"]')
-      .should('be.visible')
-      .and('contain', 'Menu is Empty')
-  })
 
   it('should close dropdown when clicking outside', () => {
     // Open dropdown

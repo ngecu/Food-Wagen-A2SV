@@ -1,4 +1,3 @@
-// src/components/FoodForm.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -258,16 +257,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
 
       {/* Form Actions with 50% width buttons */}
       <div className="food-form-actions flex space-x-3 pt-4 border-t border-gray-200">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onClose}
-          data-test-id="food-cancel-btn"
-          className="w-1/2"
-        >
-          Cancel
-        </Button>
-        <Button
+         <Button
           type="submit"
           isLoading={isLoading}
           data-test-id="food-submit-btn"
@@ -278,6 +268,17 @@ export const FoodForm: React.FC<FoodFormProps> = ({
             : (food ? 'Update Food' : 'Add Food')
           }
         </Button>
+
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onClose}
+          data-test-id="food-cancel-btn"
+          className="w-1/2"
+        >
+          Cancel
+        </Button>
+       
       </div>
     </form>
   );
