@@ -7,9 +7,10 @@ interface FoodCardProps {
   food: FoodItem;
   onEdit: (food: FoodItem) => void;
   onDelete: (food: FoodItem) => void;
+  index?: number;
 }
 
-export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) => {
+export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete,index = 0 }) => {
   const [isMounted, setIsMounted] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [restaurantImageError, setRestaurantImageError] = useState(false);
@@ -54,7 +55,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
   const restaurantImage = food.restaurant_image || food.restaurant?.logo || food.logo || '/placeholder-restaurant.jpg';
   const isOpen = food.open || food.restaurant_status === 'Open' || food.restaurant?.status === 'Open';
 
-  const statusColor = isOpen ? 'bg-[rgba(121, 185, 60, 0.2)] text-[#79B93C]' : 'bg-[rgba(241,114,40,0.2)] text-[#F17228]';
+  const statusColor = isOpen ? 'bg-open-status text-[#79B93C]' : 'bg-[rgba(241,114,40,0.2)] text-[#F17228]';
   const statusText = isOpen ? 'Open' : 'Closed';
 
   if (!isMounted) {
@@ -75,6 +76,9 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
     <article 
       className="food-card rounded-2xl overflow-hidden relative"
       data-test-id="food-card"
+      style={{
+        animation: `slideUp 0.3s ease-out ${index * 0.1}s both`
+      }}
     >
       <div className="food-card-image relative h-48 w-full">
         <img
@@ -101,7 +105,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
           <button
             ref={moreButtonRef}
             onClick={() => setShowDropdown(!showDropdown)}
-            className="food-more-btn bg-white bg-opacity-90 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-100 transition-all duration-200 shadow-lg"
+            className="food-more-btn bg-white bg-opacity-90 backdrop-blur-sm rounded-full w-8 h-8 flex items-center justify-center hover:bg-opacity-100 transition-all duration-200 shadow-lg cursor-pointer"
             data-test-id="food-more-btn"
           >
             <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,7 +121,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
                   onEdit(food);
                   setShowDropdown(false);
                 }}
-                className="food-dropdown-edit w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150 flex items-center space-x-2"
+                className="food-dropdown-edit w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-150 flex items-center space-x-2 cursor-pointer"
                 data-test-id="food-dropdown-edit"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -130,7 +134,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
                   onDelete(food);
                   setShowDropdown(false);
                 }}
-                className="food-dropdown-delete w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150 flex items-center space-x-2"
+                className="food-dropdown-delete w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors duration-150 flex items-center space-x-2 cursor-pointer"
                 data-test-id="food-dropdown-delete"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,11 +147,11 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
         </div>
       </div>
       
-      <div className="food-card-content p-5">
+      <div className="food-card-content py-5">
         <div className="food-card-restaurant">
           <div className="restaurant-info flex items-center justify-between">
             <div className="restaurant-details flex items-center space-x-3 w-full">
-              <div className="restaurant-logo relative w-10 h-10 flex-shrink-0">
+              <div className="restaurant-logo relative w-10 h-10 shrink-0">
                 <img
                   src={restaurantImageError ? '/placeholder-restaurant.jpg' : restaurantImage}
                   alt={restaurantName}
@@ -168,7 +172,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
                
                 {/* Rating with proper spacing */}
                 <div className="food-rating-container flex items-center space-x-1">
-                  <svg width="16" height="16" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="20" height="20" viewBox="0 0 24 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M10.6562 1.03125C11.1719 0 12.6328 0.0429688 13.1055 1.03125L15.9414 6.74609L22.2148 7.64844C23.332 7.82031 23.7617 9.19531 22.9453 10.0117L18.4336 14.4375L19.5078 20.668C19.6797 21.7852 18.4766 22.6445 17.4883 22.1289L11.9023 19.1641L6.27344 22.1289C5.28516 22.6445 4.08203 21.7852 4.25391 20.668L5.32812 14.4375L0.816406 10.0117C0 9.19531 0.429688 7.82031 1.54688 7.64844L7.86328 6.74609L10.6562 1.03125Z" fill="#FFB30E"/>
                   </svg>
                   <span 
@@ -193,6 +197,21 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
           </span>
         </div>
       </div>
+
+
+  <style jsx>{`
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `}</style>
+
     </article>
   );
 };

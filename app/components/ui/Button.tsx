@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
+  variant?: 'primary' | 'secondary' | 'danger' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
 }
@@ -15,12 +15,13 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
-  const baseClasses = 'food-btn inline-flex items-center justify-center transition-all duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg font-medium';
+  const baseClasses = 'food-btn inline-flex items-center justify-center transition-all duration-150 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg font-medium cursor-pointer';
   
   const variantClasses = {
     primary: 'food-btn-primary bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500',
     secondary: 'food-btn-secondary bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
     danger: 'food-btn-danger bg-red-600 hover:bg-red-700 text-white focus:ring-red-500',
+    outline: 'food-btn-outline border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 focus:ring-blue-500',
   };
 
   const sizeClasses = {

@@ -19,7 +19,8 @@ export const normalizeFoodData = (apiData: any[]): FoodItem[] => {
       restaurant_image: item.restaurant_image,
       restaurant_status: item.restaurant_status,
       Price: item.Price,
-      createdAt: item.createdAt
+      createdAt: item.createdAt,
+      restaurant: undefined
     };
 
     // Ensure rating is a number and within bounds

@@ -145,7 +145,7 @@ export default function Home() {
             <div className="food-grid-wrapper mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-12">
               <div className="food-menu-title-wrapper mb-6 flex w-full items-center justify-center text-center">
                 <h6 className="food-menu-title text-3xl font-bold text-gray-900 mx-auto">
-                  Food Menu
+                  Featured Meals
                 </h6>
               </div>
 
@@ -156,6 +156,7 @@ export default function Home() {
                     food={food}
                     onEdit={setEditingFood}
                     onDelete={handleDeleteFromCard}
+                    index={index}
                   />
                 ))}
               </div>
@@ -201,7 +202,7 @@ export default function Home() {
           setShowAddModal(false);
           setEditingFood(null);
         }}
-        title={editingFood ? "Edit Food Item" : "Add New Food Item"}
+        title={editingFood ? "Edit Food Item" : "Add Meal"}
         size="lg"
       >
         <FoodForm
@@ -217,33 +218,35 @@ export default function Home() {
 
       {/* Delete Confirmation Modal */}
       <Modal
-        isOpen={!!deletingFood}
-        onClose={() => setDeletingFood(null)}
-        title="Delete Food Item"
-        size="sm"
+  isOpen={!!deletingFood}
+  onClose={() => setDeletingFood(null)}
+  title="Delete Food Item"
+  size="sm"
+>
+  <div className="food-delete-modal-content">
+    <p className="text-gray-600 mb-6 text-center">
+      Are you sure you want to delete "{deletingFood?.name}"? This action cannot be undone.
+    </p>
+    <div className="flex space-x-3">
+      <Button
+        variant="outline"
+        onClick={() => setDeletingFood(null)}
+        data-test-id="food-cancel-delete-btn"
+        className="w-1/2"
       >
-        <div className="food-delete-modal-content">
-          <p className="text-gray-600 mb-6">
-            Are you sure you want to delete "{deletingFood?.name}"? This action cannot be undone.
-          </p>
-          <div className="flex space-x-3 justify-end">
-            <Button
-              variant="secondary"
-              onClick={() => setDeletingFood(null)}
-              data-test-id="food-cancel-delete-btn"
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="danger"
-              onClick={handleDeleteFood}
-              data-test-id="food-confirm-delete-btn"
-            >
-              Delete
-            </Button>
-          </div>
-        </div>
-      </Modal>
+        Cancel
+      </Button>
+      <Button
+        variant="danger"
+        onClick={handleDeleteFood}
+        data-test-id="food-confirm-delete-btn"
+        className="w-1/2"
+      >
+        Delete
+      </Button>
+    </div>
+  </div>
+</Modal>
     </div>
   );
 }

@@ -18,6 +18,8 @@ export const Input: React.FC<InputProps> = ({
   className = '',
   id,
   disabled,
+  required,
+  type = 'text',
   ...props
 }) => {
   const inputId = id || props.name;
@@ -29,7 +31,7 @@ export const Input: React.FC<InputProps> = ({
     'px-4';
 
   return (
-    <div className="food-input-group mb-4">
+    <div className="food-input-group">
       {label && (
         <label 
           htmlFor={inputId} 
@@ -37,6 +39,7 @@ export const Input: React.FC<InputProps> = ({
           data-test-id={`${inputId}-label`}
         >
           {label}
+          {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
       
@@ -57,11 +60,13 @@ export const Input: React.FC<InputProps> = ({
         
         <input
           id={inputId}
-          className={`food-input w-full py-3 border rounded-xl transition-colors duration-200 ${
-            error ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-          } ${disabled ? 'bg-gray-100 cursor-not-allowed opacity-70' : 'bg-white'} ${
+          type={type}
+          className={`food-input w-full py-3 bg-[#F5F5F5] transition-colors duration-200 border-0 focus:border-0 focus:ring-0 focus:outline-none ${
+            error ? 'bg-red-50' : ''
+          } ${disabled ? 'bg-gray-200 cursor-not-allowed opacity-70' : ''} ${
             iconPaddingClass
           } ${className}`}
+          style={{borderRadius:"8px"}}
           aria-describedby={error ? errorId : undefined}
           aria-invalid={!!error}
           disabled={disabled}
@@ -91,7 +96,7 @@ export const Input: React.FC<InputProps> = ({
           data-test-id={errorId}
           role="alert"
         >
-          <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
             <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
           </svg>
           {error}

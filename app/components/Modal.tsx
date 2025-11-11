@@ -1,15 +1,14 @@
-// components/ui/Modal.tsx
+// src/components/Modal.tsx
 'use client';
 
-import { useEffect } from 'react';
+import { ReactNode } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
+  title: string;
+  children: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  closeOnOverlayClick?: boolean;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -17,62 +16,35 @@ export const Modal: React.FC<ModalProps> = ({
   onClose,
   title,
   children,
-  size = 'md',
-  closeOnOverlayClick = true
+  size = 'md'
 }) => {
-  // Handle escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
-    }
-
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen, onClose]);
-
   if (!isOpen) return null;
 
   const sizeClasses = {
-    sm: 'max-w-sm',
-    md: 'max-w-md',
-    lg: 'max-w-lg',
-    xl: 'max-w-xl'
+    sm: 'max-w-md',
+    md: 'max-w-lg',
+    lg: 'max-w-2xl',
+    xl: 'max-w-4xl'
   };
 
   return (
-    <div 
-      className="food-modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
-      onClick={closeOnOverlayClick ? onClose : undefined}
-      data-test-id="food-modal-overlay"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-opacity-50 backdrop-blur-sm">
       <div 
-        className={`food-modal-content bg-white rounded-lg w-full ${sizeClasses[size]} max-h-[90vh] overflow-y-auto animate-slide-up`}
-        onClick={(e) => e.stopPropagation()}
-        data-test-id="food-modal-content"
+        className={`
+          w-full ${sizeClasses[size]} 
+          bg-white rounded-2xl shadow-2xl 
+          overflow-visible
+          animate-in fade-in-90 zoom-in-90 duration-200
+        `}
       >
-        {/* Header */}
-        {title && (
-          <div className="food-modal-header border-b border-gray-200 px-6 py-4">
-            <h3 
-              className="food-modal-title text-lg font-semibold text-gray-900"
-              data-test-id="food-modal-title"
-            >
-              {title}
-            </h3>
+        <div className="p-4">
+          <div className="flex-1 text-center">
+            <h6 className="text-xl font-semibold text-[#FF9A0E] inline-block">{title}</h6>
           </div>
-        )}
-        
-        {/* Body */}
-        <div className="food-modal-body p-6">
+        </div>
+
+        {/* Modal Content - No scrollbar, content can overflow */}
+        <div className="p-6 overflow-visible">
           {children}
         </div>
       </div>
