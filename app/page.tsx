@@ -142,58 +142,52 @@ export default function Home() {
             </div>
           ) : (
             <div className="food-content-container">
-              <div className="food-grid-wrapper mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-12">
-                <div className="food-menu-title-wrapper mb-6 flex w-full items-center justify-between">
-                  <h2 className="food-menu-title text-3xl font-bold text-gray-900">Food Menu</h2>
-                  <Button
-                    onClick={handleAddMealClick}
-                    variant="primary"
-                    className="food-add-meal-btn"
-                    data-test-id="food-add-meal-page-btn"
-                  >
-                    Add Meal
-                  </Button>
-                </div>
-
-                <div className="food-cards-grid grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-                  {visibleFoods.map((food, index) => (
-                    <FoodCard
-                      key={`${food.id}-${index}`}
-                      food={food}
-                      onEdit={setEditingFood}
-                      onDelete={handleDeleteFromCard}
-                    />
-                  ))}
-                </div>
-                
-                {hasMore && (
-                  <div className="food-load-more-section text-center mt-16 pt-12 border-t border-gray-100">
-                    <div className="food-load-more-content">
-                      <Button
-                        onClick={handleLoadMore}
-                        variant="primary"
-                        size="lg"
-                        className="food-load-more-btn bg-gradient from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-10 py-4 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
-                        data-test-id="food-load-more-btn"
-                      >
-                        <span className="food-load-more-span flex items-center justify-center">
-                          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                          </svg>
-                          Load More 
-                        </span>
-                      </Button>
-                      <p 
-                        className="food-progress-text text-gray-500 mt-4 text-sm font-medium"
-                        data-test-id="food-progress-text"
-                      >
-                        Displaying {Math.min(visibleCount, foods.length)} of {foods.length} delicious meals
-                      </p>
-                    </div>
-                  </div>
-                )}
+            <div className="food-grid-wrapper mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 xl:px-12">
+              <div className="food-menu-title-wrapper mb-6 flex w-full items-center justify-center text-center">
+                <h6 className="food-menu-title text-3xl font-bold text-gray-900 mx-auto">
+                  Food Menu
+                </h6>
               </div>
+
+              <div className="food-cards-grid grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+                {visibleFoods.map((food, index) => (
+                  <FoodCard
+                    key={`${food.id}-${index}`}
+                    food={food}
+                    onEdit={setEditingFood}
+                    onDelete={handleDeleteFromCard}
+                  />
+                ))}
+              </div>
+              
+              {hasMore && (
+                <div className="food-load-more-section text-center mt-16 pt-12 border-t border-gray-100">
+                  <div className="food-load-more-content">
+                    <Button
+                      onClick={handleLoadMore}
+                      variant="primary"
+                      size="lg"
+                      className="food-load-more-btn bg-gradient from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-10 py-4 text-lg font-bold shadow-lg hover:shadow-xl transition-all duration-300"
+                      data-test-id="food-load-more-btn"
+                    >
+                      <span className="food-load-more-span flex items-center justify-center">
+                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                        </svg>
+                        Load More 
+                      </span>
+                    </Button>
+                    <p 
+                      className="food-progress-text text-gray-500 mt-4 text-sm font-medium"
+                      data-test-id="food-progress-text"
+                    >
+                      Displaying {Math.min(visibleCount, foods.length)} of {foods.length} delicious meals
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
+          </div>
           )}
         </section>
       </main>

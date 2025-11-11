@@ -53,8 +53,8 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
   const restaurantName = food.restaurant_name || food.restaurant?.name || 'Unknown Restaurant';
   const restaurantImage = food.restaurant_image || food.restaurant?.logo || food.logo || '/placeholder-restaurant.jpg';
   const isOpen = food.open || food.restaurant_status === 'Open' || food.restaurant?.status === 'Open';
-  
-  const statusColor = isOpen ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+
+  const statusColor = isOpen ? 'bg-[rgba(121, 185, 60, 0.2)] text-[#79B93C]' : 'bg-[rgba(241,114,40,0.2)] text-[#F17228]';
   const statusText = isOpen ? 'Open' : 'Closed';
 
   if (!isMounted) {
@@ -159,7 +159,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
               <div className="flex flex-col flex-1 min-w-0">
                 {/* Food Name with proper truncation */}
                 <span 
-                  className="food-name text-sm font-semibold text-gray-900 mb-1 truncate"
+                  className="food-name text-sm text-gray-900 mb-1 truncate"
                   data-test-id="food-name"
                   title={displayName}
                 >
@@ -186,7 +186,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) =>
         {/* Status Badge */}
         <div className="food-status-container flex justify-start mt-4">
           <span 
-            className={`restaurant-status px-4 py-2 rounded-full text-xs font-semibold ${statusColor} transition-colors duration-200`}
+            className={`restaurant-status px-4 py-2 rounded-full text-xs ${statusColor} transition-colors duration-200`}
             data-test-id="restaurant-status"
           >
             {statusText}

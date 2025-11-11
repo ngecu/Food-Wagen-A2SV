@@ -247,14 +247,6 @@ padding:12px;
     align-items: center;
 }
 
-
-
-
-
-
-
-
-
-
-
-
+.food-name,.restaurant-status{
+  font-weight: 700 !important;
+}
