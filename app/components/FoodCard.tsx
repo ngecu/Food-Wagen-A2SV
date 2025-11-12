@@ -60,7 +60,7 @@ export const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete, inde
   const isOpen = food.open || food.restaurant_status === 'Open' || food.restaurant?.status === 'Open';
 
   const statusColor = isOpen ? 'bg-[rgba(121,185,60,0.2)] text-[#79B93C]' : 'bg-[rgba(241,114,40,0.2)] text-[#F17228]';
-  const statusText = isOpen ? 'Open Now' : 'Closed';
+  const statusText = isOpen ? 'Open' : 'Closed';
 
   if (!isMounted) {
     return (

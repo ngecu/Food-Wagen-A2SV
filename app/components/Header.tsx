@@ -115,12 +115,13 @@ export const Header: React.FC<HeaderProps> = ({
                                 variant="primary"
                                 onClick={onAddMealClick}
                                 data-test-id="food-add-meal-btn"
+                                className='cursor-pointer'
                             >
                                 Add Meal
                             </Button>
                         </nav>
 
-                        {/* Mobile Menu Button */}
+                    {/* Mobile Menu Button */}
                         <button
                             className="food-mobile-menu-btn md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 transition-colors duration-150"
                             onClick={() => setIsMenuOpen(!isMenuOpen)}

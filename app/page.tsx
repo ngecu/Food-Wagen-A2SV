@@ -98,6 +98,10 @@ export default function Home() {
     setDeletingFood(null);
   };
 
+  // Fix: Proper empty state condition
+  const isEmptyState = foods.length === 0 && !loading && !error;
+  const isSearchEmptyState = searchTerm && foods.length === 0 && !loading && !error;
+
   return (
     <div className="food-home-container min-h-screen bg-gray-50">
       <MemoizedHeader 
@@ -127,7 +131,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-          ) : (foods.length === 0 || (searchTerm && foods.length === 0)) ? (
+          ) : (isEmptyState || isSearchEmptyState) ? (
             <div className="food-empty-state-wrapper flex justify-center items-center min-h-96">
               <div className="food-empty-state-content bg-white rounded-3xl shadow-lg p-12 text-center max-w-2xl mx-6">
                 <div className="food-empty-icon-wrapper mb-8">
@@ -177,8 +181,8 @@ export default function Home() {
                   {searchTerm ? 'No Results Found' : 'Menu is Empty'}
                 </h3>
                 <p 
-                  className="food-empty-description text-gray-600 text-lg mb-8 leading-relaxed"
-                  data-test-id="food-empty-description"
+                  className="food-empty-description text-lg mb-8 leading-relaxed"
+                  data-test-id="food-empty-description" style={{color:"grey"}}
                 >
                   {searchTerm 
                     ? `No meals found for "${searchTerm}". Try a different search term.`
@@ -258,7 +262,7 @@ export default function Home() {
           food={editingFood || undefined}
           onSubmit={editingFood ? handleUpdateFood : handleCreateFood}
           onClose={handleCloseAddEditModal}
-          isLoading={isSubmitting} // Pass loading state here
+          isLoading={isSubmitting}
         />
       </Modal>
 
@@ -278,7 +282,7 @@ export default function Home() {
             <Button
               variant="primary"
               onClick={handleDeleteFood}
-              isLoading={isDeleting} // Pass deleting state here
+              isLoading={isDeleting}
               data-test-id="food-confirm-delete-btn"
               className="w-1/2"
             >
@@ -287,7 +291,7 @@ export default function Home() {
             <Button
               variant="outline"
               onClick={handleCloseDeleteModal}
-              disabled={isDeleting} // Disable cancel while deleting
+              disabled={isDeleting}
               data-test-id="food-cancel-delete-btn"
               className="w-1/2"
             >

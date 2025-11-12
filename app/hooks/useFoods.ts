@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from 'react';
+import { useEffect, useCallback, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import { fetchFoods, loadMore } from '../store/slices/foodSlice';
@@ -9,13 +9,17 @@ export const useFoods = () => {
   const { items, loading, error, visibleCount } = useSelector((state: RootState) => state.food);
   const { term, suggestions, showSuggestions } = useSelector((state: RootState) => state.search);
 
+  // Use a ref to track initial load
+  const initialLoadRef = useRef(false);
+
   // Initial load - fetch foods without search term
   useEffect(() => {
-    // Only fetch if we haven't loaded foods yet and we're not in the middle of a search
-    if (items.length === 0 && !term && !loading) {
+    // Only fetch once on initial mount, not when items.length is 0
+    if (!initialLoadRef.current && !term && !loading) {
+      initialLoadRef.current = true;
       dispatch(fetchFoods()); // Call without parameters for initial load
     }
-  }, [dispatch, items.length, term, loading]);
+  }, [dispatch, term, loading]); // Remove items.length from dependencies
 
   // Memoized search function
   const handleSearch = useCallback(

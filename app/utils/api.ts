@@ -1,7 +1,7 @@
 import { FoodItem, FoodFormData } from '../types/food';
 import { normalizeFoodData } from './normailze';
 
-const API_BASE_URL = 'https://6852821e0594059b23cdd834.mockapi.io';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export const foodApi = {
   getFoods: async (search?: string): Promise<FoodItem[]> => {
@@ -11,11 +11,18 @@ export const foodApi = {
         `${API_BASE_URL}/Food?name=${encodeURIComponent(search.trim())}` : 
         `${API_BASE_URL}/Food`;
       
-      console.log('Fetching foods from:', url); // Debug log
+      console.log('Fetching foods from:', url);
       
       const response = await fetch(url, {
-        next: { revalidate: 60 } // Cache for 60 seconds
+        // Remove next.revalidate to prevent caching issues
+        cache: 'no-cache' // Add this to prevent caching issues
       });
+
+      // Handle 304 specifically - this is a successful "not modified" response
+      if (response.status === 304) {
+        console.log('Data not modified (304) - returning empty array');
+        return [];
+      }
       
       if (!response.ok) {
         // If 404 or other error, return empty array instead of throwing
@@ -27,9 +34,16 @@ export const foodApi = {
       }
       
       const data = await response.json();
-      console.log('Raw API response:', data); // Debug log
+      console.log('Raw API response:', data);
+      
+      // Handle case where API returns null or undefined
+      if (!data) {
+        console.log('API returned null or undefined data');
+        return [];
+      }
+      
       const normalizedData = normalizeFoodData(data);
-      console.log('Normalized data:', normalizedData); // Debug log
+      console.log('Normalized data:', normalizedData);
       return normalizedData;
     } catch (error) {
       console.error('API Error:', error);
@@ -38,7 +52,6 @@ export const foodApi = {
     }
   },
 
-  // ... rest of your API functions remain the same
   createFood: async (food: FoodFormData): Promise<FoodItem> => {
     const response = await fetch(`${API_BASE_URL}/Food`, {
       method: 'POST',
