@@ -8,7 +8,7 @@ interface ModalProps {
   title: string;
   children: ReactNode;
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  [key: string]: any; // This allows any additional props including data-test-id
+  [key: string]: any;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -17,7 +17,7 @@ export const Modal: React.FC<ModalProps> = ({
   title,
   children,
   size = 'md',
-  ...props // This captures all additional props
+  ...props
 }) => {
   if (!isOpen) return null;
 
@@ -29,7 +29,10 @@ export const Modal: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-opacity-50 backdrop-blur-sm">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4  bg-opacity-50 backdrop-blur-sm overflow-y-auto"
+      onClick={onClose} // Close when clicking backdrop
+    >
       <div 
         className={`
           p-4
@@ -38,17 +41,21 @@ export const Modal: React.FC<ModalProps> = ({
           max-h-[90vh] overflow-hidden
           animate-in fade-in-90 zoom-in-90 duration-200
         `}
-        {...props} // Spread additional props here
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+        {...props}
       >
-        <div className="flex-1 text-center">
+        {/* Modal Header - Fixed */}
+        <div className="flex-1 text-center pb-4">
           <h6 className="text-xl font-semibold text-[#FF9A0E] inline-block" data-test-id="food-modal-title">
             {title}
           </h6>
         </div>
 
-        {/* Modal Content */}
-        <div className="p-6 overflow-visible">
-          {children}
+        {/* Modal Content - Scrollable */}
+        <div className="overflow-y-auto max-h-[calc(90vh-120px)]"> {/* Adjust height based on header/footer */}
+          <div className="p-6">
+            {children}
+          </div>
         </div>
       </div>
     </div>

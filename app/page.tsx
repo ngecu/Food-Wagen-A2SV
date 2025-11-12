@@ -35,38 +35,48 @@ export default function Home() {
     handleSuggestionClick,
     setShowSuggestions,
   } = useFoods();
- 
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingFood, setEditingFood] = useState<any>(null);
   const [deletingFood, setDeletingFood] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleCreateFood = async (formData: FoodFormData) => {
+    setIsSubmitting(true);
     try {
       await dispatch(createFood(formData)).unwrap();
       setShowAddModal(false);
     } catch (error) {
       console.error('Error creating food:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleUpdateFood = async (formData: FoodFormData) => {
     if (!editingFood) return;
+    setIsSubmitting(true);
     try {
       await dispatch(updateFood({ id: editingFood.id, foodData: formData })).unwrap();
       setEditingFood(null);
     } catch (error) {
       console.error('Error updating food:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handleDeleteFood = async () => {
     if (!deletingFood) return;
+    setIsDeleting(true);
     try {
       await dispatch(deleteFood(deletingFood.id)).unwrap();
       setDeletingFood(null);
     } catch (error) {
       console.error('Error deleting food:', error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -76,6 +86,16 @@ export default function Home() {
 
   const handleAddMealClick = () => {
     setShowAddModal(true);
+  };
+
+  // Close modals and reset states
+  const handleCloseAddEditModal = () => {
+    setShowAddModal(false);
+    setEditingFood(null);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setDeletingFood(null);
   };
 
   return (
@@ -214,11 +234,8 @@ export default function Home() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                           </svg>
                           Load More 
-
-                          
                         </span>
                       </Button>
-                    
                     </div>
                   </div>
                 )}
@@ -233,28 +250,22 @@ export default function Home() {
       {/* Add/Edit Modal */}
       <Modal
         isOpen={showAddModal || !!editingFood}
-        onClose={() => {
-          setShowAddModal(false);
-          setEditingFood(null);
-        }}
+        onClose={handleCloseAddEditModal}
         title={editingFood ? "Edit Food Item" : "Add Meal"}
         size="lg"
       >
         <FoodForm
           food={editingFood || undefined}
           onSubmit={editingFood ? handleUpdateFood : handleCreateFood}
-          onClose={() => {
-            setShowAddModal(false);
-            setEditingFood(null);
-          }}
-          isLoading={false}
+          onClose={handleCloseAddEditModal}
+          isLoading={isSubmitting} // Pass loading state here
         />
       </Modal>
 
       {/* Delete Confirmation Modal */}
       <Modal
         isOpen={!!deletingFood}
-        onClose={() => setDeletingFood(null)}
+        onClose={handleCloseDeleteModal}
         title="Delete Food Item"
         size="sm"
         data-test-id="food-modal-content"
@@ -267,14 +278,16 @@ export default function Home() {
             <Button
               variant="primary"
               onClick={handleDeleteFood}
+              isLoading={isDeleting} // Pass deleting state here
               data-test-id="food-confirm-delete-btn"
               className="w-1/2"
             >
-              Delete
+              {isDeleting ? 'Deleting...' : 'Delete'}
             </Button>
             <Button
               variant="outline"
-              onClick={() => setDeletingFood(null)}
+              onClick={handleCloseDeleteModal}
+              disabled={isDeleting} // Disable cancel while deleting
               data-test-id="food-cancel-delete-btn"
               className="w-1/2"
             >

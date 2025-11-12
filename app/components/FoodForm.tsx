@@ -72,9 +72,14 @@ export const FoodForm: React.FC<FoodFormProps> = ({
       newErrors.food_name = 'Food Name is required';
     }
 
-    // Food Rating validation
+    // Food Rating validation - Fixed with generic error message
     if (formData.rating < 1 || formData.rating > 5) {
-      newErrors.food_rating = 'Food Rating must be between 1 and 5';
+      newErrors.food_rating = 'Rating must be between 1 and 5';
+    }
+
+    // Food Price validation
+    if (formData.price <= 0) {
+      newErrors.food_price = 'Price must be greater than 0';
     }
 
     // Food Image validation
@@ -133,10 +138,26 @@ export const FoodForm: React.FC<FoodFormProps> = ({
         [field]: value,
       }));
     }
+    
     // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+    const errorField = getErrorFieldName(field);
+    if (errors[errorField]) {
+      setErrors(prev => ({ ...prev, [errorField]: '' }));
     }
+  };
+
+  // Map form field names to error field names
+  const getErrorFieldName = (field: string): string => {
+    const fieldMap: Record<string, string> = {
+      'name': 'food_name',
+      'rating': 'food_rating',
+      'price': 'food_price',
+      'image': 'food_image',
+      'restaurant.name': 'restaurant_name',
+      'restaurant.logo': 'restaurant_logo',
+      'restaurant.status': 'restaurant_status'
+    };
+    return fieldMap[field] || field;
   };
 
   // Only show errors after form submission
@@ -157,6 +178,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
           error={getError('food_name')}
           data-test-id="food-name-input"
           required
+          disabled={isLoading} // Disable during loading
         />
 
         <Input
@@ -165,26 +187,29 @@ export const FoodForm: React.FC<FoodFormProps> = ({
           min="1"
           max="5"
           step="0.1"
-          placeholder="Enter food rating"
+          placeholder="Enter food rating (1-5)"
           value={formData.rating || ''}
           onChange={(e) => handleChange('rating', parseFloat(e.target.value) || 0)}
           error={getError('food_rating')}
           data-test-id="food-rating-input"
           required
           className="mt-4"
+          disabled={isLoading} // Disable during loading
         />
 
         <Input
           name="food_price"
           type="number"
           step="0.01"
-          placeholder="Enter food price"
+          min="0.01"
+          placeholder="Enter food price ($)"
           value={formData.price || ''}
           onChange={(e) => handleChange('price', parseFloat(e.target.value) || 0)}
           error={getError('food_price')}
           data-test-id="food-price-input"
           required
           className="mt-4"
+          disabled={isLoading} // Disable during loading
         />
 
         <Input
@@ -197,6 +222,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
           data-test-id="food-image-input"
           required
           className="mt-4"
+          disabled={isLoading} // Disable during loading
         />
 
         <Input
@@ -209,6 +235,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
           data-test-id="restaurant-name-input"
           required
           className="mt-4"
+          disabled={isLoading} // Disable during loading
         />
 
         <Input
@@ -221,6 +248,7 @@ export const FoodForm: React.FC<FoodFormProps> = ({
           data-test-id="restaurant-logo-input"
           required
           className="mt-4"
+          disabled={isLoading} // Disable during loading
         />
 
         <div className="food-input-group mt-4">
@@ -233,9 +261,12 @@ export const FoodForm: React.FC<FoodFormProps> = ({
             name="restaurant_status"
             value={formData.restaurant.status}
             onChange={(e) => handleChange('restaurant.status', e.target.value)}
-            className="food-select w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-150"
+            className={`food-select w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-150 ${
+              isLoading ? 'bg-gray-200 cursor-not-allowed opacity-70' : ''
+            }`}
             data-test-id="restaurant-status-select"
             required
+            disabled={isLoading} // Disable during loading
           >
             <option value="Open Now">Open Now</option>
             <option value="Closed">Closed</option>
@@ -257,9 +288,10 @@ export const FoodForm: React.FC<FoodFormProps> = ({
 
       {/* Form Actions with 50% width buttons */}
       <div className="food-form-actions flex space-x-3 pt-4 border-t border-gray-200">
-         <Button
+        <Button
           type="submit"
           isLoading={isLoading}
+          disabled={isLoading}
           data-test-id="food-submit-btn"
           className="w-1/2"
         >
@@ -273,12 +305,12 @@ export const FoodForm: React.FC<FoodFormProps> = ({
           type="button"
           variant="outline"
           onClick={onClose}
+          disabled={isLoading} // Disable cancel during loading
           data-test-id="food-cancel-btn"
           className="w-1/2"
         >
           Cancel
         </Button>
-       
       </div>
     </form>
   );
